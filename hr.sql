@@ -184,3 +184,118 @@ HAVING
 	AND MIN(SALARY) >= 6000
 ORDER BY
 	MANAGER_ID;
+	
+
+
+-- [join] --
+
+
+-- 자신의 담당 매니저의 고용일보다 빠른 입사자 찾기
+-- 사원번호, 입사일, 이름(last_name), 매니저아이디 출력
+-- employees self 조인
+SELECT e.EMPLOYEE_ID, e.HIRE_DATE, e.LAST_NAME, e.MANAGER_ID
+	FROM EMPLOYEES e -- (내정보) ?
+	JOIN EMPLOYEES e2 -- (매니저정보) ?
+	ON e.MANAGER_ID = e2.EMPLOYEE_ID
+	AND e.HIRE_DATE < e2.HIRE_DATE; 
+
+
+-- 도시 이름이 T 로 시작하는 지역에 사는 사원들의 정보 조회
+-- 사원번호, 이름(last_name), 부서번호, 지역명
+-- employees, department, locations 조인
+SELECT
+	e.EMPLOYEE_ID,
+	e.LAST_NAME,
+	d.DEPARTMENT_ID,
+	l.CITY
+FROM
+	EMPLOYEES e
+JOIN DEPARTMENTS d ON
+	e.DEPARTMENT_ID = d.DEPARTMENT_ID
+JOIN LOCATIONS l ON
+	d.LOCATION_ID = l.LOCATION_ID
+WHERE
+	l.CITY LIKE 'T%';
+
+
+-- 각 부서별 사원 수, 평균 연봉(소수점 2자리까지) 조회
+-- 부서명, 부서 위치 아이디, 부서별 사원 수, 평균 연봉 출력
+-- employees, department 조인
+SELECT
+	d.DEPARTMENT_NAME,
+	d.LOCATION_ID,
+	COUNT(e.EMPLOYEE_ID),
+	ROUND(AVG(e.SALARY), 2)
+FROM
+	EMPLOYEES e
+JOIN DEPARTMENTS d ON
+	e.EMPLOYEE_ID = d.DEPARTMENT_ID
+GROUP BY
+	d.DEPARTMENT_NAME,
+	d.LOCATION_ID
+ORDER BY
+	d.LOCATION_ID;
+
+
+-- Executive 부서에 근무하는 모든 사원들의 부서번호, 이름(last_name), job_id 조회
+-- employees, department 조인
+SELECT e.DEPARTMENT_ID, e.LAST_NAME, e.JOB_ID 
+	FROM EMPLOYEES e 
+	JOIN DEPARTMENTS d
+	ON e.DEPARTMENT_ID = d.DEPARTMENT_ID
+	WHERE d.DEPARTMENT_NAME = 'Executive';
+
+
+-- 기존의 직무를 계속하고 있는 사원 조회
+-- 사원번호, job_id 출력
+-- employees, job_history 조인
+SELECT
+	e.EMPLOYEE_ID,
+	e.JOB_ID
+FROM
+	EMPLOYEES e
+JOIN JOB_HISTORY jh 
+	ON e.EMPLOYEE_ID = jh.EMPLOYEE_ID
+	AND e.JOB_ID = jh.JOB_ID; 
+
+
+-- 각 사원별 소속 부서에서 자신보다 늦게 고용되었거나 많은 급여를 받는 사원의 정보 조회
+-- 부서번호, first_name 과 last_name 을 연결하여 출력, 급여, 입사일 출력
+-- employees self 조인
+SELECT
+	DISTINCT e.department_id, -- 이거 하나 DISTINCT 하면 나머지 다 걸린다 <중복제거>
+	e.first_name || ' ' || e.last_name,
+	e.salary,
+	e.hire_date
+FROM EMPLOYEES e
+JOIN EMPLOYEES e2 
+ON e.department_id = e2.DEPARTMENT_ID
+    AND e.hire_date < e2.HIRE_DATE
+	AND e.salary < e2.SALARY
+ORDER BY e.department_id;
+
+
+
+-- [서브쿼리]로 작성
+-- Executive 부서에 근무하는 모든 사원들의 부서번호, 이름(last_name), job_id 조회
+-- employees, department 조인
+
+--SELECT e.DEPARTMENT_ID, e.LAST_NAME, e.JOB_ID --------- [조인] 작성 
+--	FROM EMPLOYEES e 
+--	JOIN DEPARTMENTS d
+--	ON e.DEPARTMENT_ID = d.DEPARTMENT_ID
+--	WHERE d.DEPARTMENT_NAME = 'Executive';
+
+SELECT ------------------------------------------------ [서브쿼리] 작성 
+	e.DEPARTMENT_ID,
+	e.LAST_NAME,
+	e.JOB_ID 
+FROM
+	EMPLOYEES e
+WHERE
+	 (E.DEPARTMENT_ID,'Executive') 
+  IN (SELECT
+	  D.DEPARTMENT_ID,
+	  D.DEPARTMENT_NAME
+  FROM
+	  DEPARTMENTS d);
