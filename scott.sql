@@ -1292,19 +1292,22 @@ INSERT INTO EXAM_DEPT(deptno,dname,loc) VALUES (80,'DML','BUNDANG');
 
 -- exam_emp 사원등록
 -- 7201, TEST_USER1, MANAGER, 7788, 2016-01-02, 4500, NULL, 50
-INSERT INTO EXAM_EMP, VALUES(7201, 'TEST_USER1', 'MANAGER', 7788, '2016-01-02', 4500, NULL, 50);
+INSERT INTO EXAM_EMP VALUES(7201, 'TEST_USER1', 'MANAGER', 7788, '2016-01-02', 4500, NULL, 50);
 -- 7202, TEST_USER2, CLERK, 7201, 2016-02-21, 1800, NULL, 50
-INSERT INTO EXAM_EMP, VALUES(7202, 'TEST_USER2', 'CLERK', 7201, '2016-02-21', 1800, NULL, 50);
+INSERT INTO EXAM_EMP VALUES(7202, 'TEST_USER2', 'CLERK', 7201, '2016-02-21', 1800, NULL, 50);
 -- 7203, TEST_USER3, ANALYST, 7201, 2016-04-11, 3400, NULL, 60
-INSERT INTO EXAM_EMP, VALUES(7203, 'TEST_USER3, 'ANALYST', 7201, '2016-04-11', 3400, NULL, 60);
+INSERT INTO EXAM_EMP VALUES(7203, 'TEST_USER3', 'ANALYST', 7201, '2016-04-11', 3400, NULL, 60);
+
+
+
 -- 7204, TEST_USER4, SALESMAN, 7201, 2016-05-31, 2700, 300, 60
-INSERT INTO EXAM_EMP, VALUES(7204, 'TEST_USER4', 'SALESMAN', 7201, '2016-05-31', 2700, 300, 60);
+INSERT INTO EXAM_EMP VALUES(7204, 'TEST_USER4', 'SALESMAN', 7201, '2016-05-31', 2700, 300, 60);
 -- 7205, TEST_USER5, CLERK, 7201, 2016-07-20, 2600, NULL, 70
-INSERT INTO EXAM_EMP, VALUES(7205, 'TEST_USER5', 'CLERK', 7201, '2016-07-20', 2600, NULL, 70);
+INSERT INTO EXAM_EMP VALUES(7205, 'TEST_USER5', 'CLERK', 7201, '2016-07-20', 2600, NULL, 70);
 -- 7206, TEST_USER6, CLERK, 7201, 2016-09-08, 2300, NULL, 70
-INSERT INTO EXAM_EMP, VALUES(7206, 'TEST_USER6', 'CLERK', 7201, '2016-09-08', 2300, NULL, 70);
+INSERT INTO EXAM_EMP VALUES(7206, 'TEST_USER6', 'CLERK', 7201, '2016-09-08', 2300, NULL, 70);
 -- 7207, TEST_USER7, LECTURER, 7201, 2016-10-28, 4500, NULL, 80
-INSERT INTO EXAM_EMP, VALUES(7207, 'TEST_USER7', 'LECTURER', 7201, '2016-10-28', 4500, NULL, 80);
+INSERT INTO EXAM_EMP VALUES(7207, 'TEST_USER7', 'LECTURER', 7201, '2016-10-28', 4500, NULL, 80);
 
 -- UPDATE
 -- exam_emp 에 속한 사원 중 50번 부서에서 근무하는 사원들의 평균 급여보다 많은 급여를
@@ -1383,16 +1386,170 @@ UPDATE DEPT_TCL SET LOC='SEOUL' WHERE DEPTNO = 30;
 COMMIT;
 
 
+-- DDL(데이터 정의어)
+-- 데이터베이스 데이터를 보관하고 관리하기 위해 제공되는 여러 객체의 생성/변경/삭제 관련 기능
+-- CREATE(생성) / ALTER(생성된 객체 변경) / DROP(생성된 객체 삭제)
+
+-- 1. 테이블 정의어
+-- CREATE TABLE 테이블이름(
+--	 열이름1 자료형,
+--   열이름2 자료형,
+--	 열이름3 자료형,
+--	 열이름4 자료형,
+--)
+
+-- 테이블 이름 작성 규칙
+-- 1) 문자로 시작(한글 가능하나 사용하지 않음 - 숫자로 시작 못함)
+-- 2) 테이블 이름은 길이의 제한이 있음
+-- 3) 같은 소유자 소유의 테이블 이름은 중복이 불가능함
+-- 4) SQL 키워드는 사용 불가(SELECT, INSERT 등)
+
+-- 열이름 생성 규칙
+-- 1) 문자로 시작
+-- 2) 길이의 제한이 있음(30byte)
+-- 3) 한 테이블에 열 이름 중복 불가
+-- 4) 열 이름은 영문자, 숫자, 특수문자(_, #, $) 사용 가능
+-- 5) SQL 키워드는 사용 불가(SELECT, INSERT 등)
+
+-- 자료형
+-- 문자 : varchar2(길이), nvarchar2(길이), char(길이), nchar(길이)
+-- 	     var : 가변(저장된 값의 길이만큼만 사용) ~~~~~~~~~~~~~~~~~~~~ 길이만큼 잡은게 움직인다(동적이라는 뜻)
+-- 		 name varchar2(10) : 홍길동(9byte)
+-- 		 name char(10) : 홍길동(10byte) - 고정길이
+-- 		 db 버전에 따라 한글 문자 하나당 2byte 할당 or 3byte 할당
+-- 		 name varchar2(10) : 홍길동전 => 들어갈 값의 크기가 크다고 오류 남
+--			 nvarchar2(10), nchar() : 10 이 바이트 개념이 아니라 문자 길이 자체를 의미
+-- 숫자 : number(전체자릿수, 소수점자릿수)
+-- 날짜 : date
+-- BLOB : 대용량 이진 데이터 저장
+-- CLOB : 대용량 텍스트 데이터 저장
 
 
+CREATE TABLE EMP_DDL(
+	EMPNO NUMBER(4,0),
+	ENAME VARCHAR2(10), -- 영어 10자 까지 가능 / 한글 3자 까지 가능
+	JOB VARCHAR2(9),
+	MRG NUMBER(4,0),
+	HIREDATE DATE,
+	SAL NUMBER(7,2),
+	COMM NUMBER(7,2),
+	DEPTNO NUMBER(2,0)
+);
+
+-- DEPT 테이블의 열구조와 데이터 복사하여 새 테이블 생성
+CREATE TABLE DEPT_DDL AS SELECT * FROM DEPT;
+
+-- DEPT 테이블의 열구조만 복사하여 새 테이블 생성
+CREATE TABLE DEPT_DDL2 AS SELECT * FROM DEPT WHERE 1<>1;
 
 
+-- ALTER : 변경
+-- 새로운 열 추가 / 열 이름 변경 / 열 삭제 / 열 자료형 변경
+-- EMP_DDL 에 새로운 열(HP : 010-1234-5637) 추가
+ALTER TABLE EMP_DDL ADD HP VARCHAR2(20);
+SELECT * FROM EMP_DDL ed;
+
+-- HP => TEL 
+ALTER TABLE EMP_DDL RENAME COLUMN HP TO TEL;
+
+-- EMPNO NUMBER(5) 로 변경
+ALTER TABLE EMP_MODIFY EMPNO NUMBER(5);
+
+-- TEL 삭제
+ALTER TABLE EMP_DDL DROP COLUMN TEL;
+
+-- 테이블 이름 변경
+RENAME EMP_DDL TO EMP_RENAME;
+
+-- DROP : 삭제
+DROP TABLE EMP_RENAME;
+
+CREATE TABLE MEMBERTBL(
+	ID CHAR2(8),
+	NAME VARCHAR2(10), -- NVARCHAR2(10)
+	ADDR VARCHAR2(50), -- NVARCHAR2(50)
+	NATION CHAR2(4), -- NCHAR(4)
+	EMAIL VARCHAR2(50), -- NVARCHAR2(50)
+	AGE NUMBER(7,2)
+);
+
+--DROP TABLE MEMBERTBL;  
+
+-- member 테이블에 BIGO 열 추가하기
+-- [조건] 가변형 문자열, 길이는 20
+ALTER TABLE MEMBERBL AND BIGO BARCHAR2(20);
+
+-- BIGO 열 크기를 30으로 변경하기
+ALTER TABLE MEMBERBL MODIFY BIGO BARCHAR2(30);
+
+ALTER TABLE MEMBERBL MODIFY NATION NATION(4);
+
+-- BIGO 열 이름을 REMARK 로 변경하기
+ALTER TABLE MEMBERTBL RENAME COLUMN BIGO TO REMARK;
+
+-- "SCOTT"."MEMBERTBL"."NATION" 열에 대한 값이 너무 큼(실제: 12, 최대값: 4)
+INSERT INTO MEMBERTBL(ID, NAME, ADDR, NATION, EMAIL, AGE)
+VALUES('hong1234', '홍길동', '서울시 구로구 개봉동', '대한민국', ' hong123@naver.com', 25);
+
+SELECT * FROM MEMBERTBL;
 
 
+-- 오라클 객체
+-- 인덱스 / 뷰 / 시퀀스(★) / 동의어 / ROWNUM
+
+-- 인덱스 : 빠른 검색
+-- 1) 자동 생성 : 기본키를 설정 시 인데스로 자동 설정 됨
+-- 2) 직접 인덱스 생성
+-- CREATE INDEX 인덱스명 ON 테이블명(열이름1 ASC OR DESC, 열이름2 ASC OR DESC..)
+-- EMP 테이블의 SAL 칼럼을 index 로 지정
+CREATE INDEX idx_emp_sal ON emp(sal);
+
+DROP INDEX idx_emp_sal;
+
+-- 뷰 : 가상 테이블
+-- 1. 편리성 : 복잡한 select 문을 복잡도를 완화하기 위해
+--			 자주 활용하는 select 문을 뷰로 저장해 놓은 후 다른 sql 구문에서 활용
+-- 2. 보안성 : 노출되면 안 되는 컬럼을 제외하여 접근 허용
+
+-- 뷰 생성 할 수 있는 권한 부여 받기
+-- CREATE [OR REPLACE] VIEW 뷰이름(열이름1, 열이름2...) AS (SELECT 구문) 
+
+-- emp 테이블의 20번 부서에 해당하는 사원들의 뷰 생성
+CREATE VIEW vw_emp_20 AS (SELECT empno, ename, job, deptno FROM emp WHERE deptno = 20);
+DROP VIEW vw_emp_20;
 
 
+-- 뷰에 데이터 삽입 시 원본 테이블에 삽입이 일어남
+INSERT INTO vw_emp_20 VALUES(6666,'홍길동','MANAGER',7899,'2012-08-01',1200,0,20);
+SELECT * FROM VW_EMP_20;
+
+SELECT * FROM EMP;
 
 
+-- 뷰는 SELECT 만 가능하도록 제한
+CREATE VIEW vw_emp_30 AS (
+SELECT
+	empno,
+	ename,
+	job,
+	deptno
+FROM
+	emp
+WHERE
+	deptno = 30) WITH READ ONLY;
+
+
+-- ROWNUM : 특수 컬럼(조회된 순서대로 일련번호 부여)
+-- ORDER BY 기준이 PK(기본키) 가 아니면 번호 부여가 이상하게 나옴
+SELECT ROWNUM, E.*
+FROM EMP E
+ORDER BY SAL DESC;
+
+
+-- 정렬의 기준이 PK 가 아니라면 인라인 뷰에서 정렬 후
+-- ROWNUM 번호를 부여 해야 함
+SELECT ROWNUM, E.*
+FROM (SELECT * FROM EMP ORDER BY SAL DESC) E;
 
 
 
