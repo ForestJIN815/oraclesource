@@ -1291,23 +1291,20 @@ INSERT INTO EXAM_DEPT(deptno,dname,loc) VALUES (80,'DML','BUNDANG');
 
 
 -- exam_emp 사원등록
--- 7201, TEST_USER1, MANAGER, 7788, 2016-01-02, 4500, NULL, 50
-INSERT INTO EXAM_EMP VALUES(7201, 'TEST_USER1', 'MANAGER', 7788, '2016-01-02', 4500, NULL, 50);
--- 7202, TEST_USER2, CLERK, 7201, 2016-02-21, 1800, NULL, 50
-INSERT INTO EXAM_EMP VALUES(7202, 'TEST_USER2', 'CLERK', 7201, '2016-02-21', 1800, NULL, 50);
--- 7203, TEST_USER3, ANALYST, 7201, 2016-04-11, 3400, NULL, 60
-INSERT INTO EXAM_EMP VALUES(7203, 'TEST_USER3', 'ANALYST', 7201, '2016-04-11', 3400, NULL, 60);
-
-
-
--- 7204, TEST_USER4, SALESMAN, 7201, 2016-05-31, 2700, 300, 60
-INSERT INTO EXAM_EMP VALUES(7204, 'TEST_USER4', 'SALESMAN', 7201, '2016-05-31', 2700, 300, 60);
--- 7205, TEST_USER5, CLERK, 7201, 2016-07-20, 2600, NULL, 70
-INSERT INTO EXAM_EMP VALUES(7205, 'TEST_USER5', 'CLERK', 7201, '2016-07-20', 2600, NULL, 70);
--- 7206, TEST_USER6, CLERK, 7201, 2016-09-08, 2300, NULL, 70
-INSERT INTO EXAM_EMP VALUES(7206, 'TEST_USER6', 'CLERK', 7201, '2016-09-08', 2300, NULL, 70);
--- 7207, TEST_USER7, LECTURER, 7201, 2016-10-28, 4500, NULL, 80
-INSERT INTO EXAM_EMP VALUES(7207, 'TEST_USER7', 'LECTURER', 7201, '2016-10-28', 4500, NULL, 80);
+-- 7201, TEST_USER1, MANAGER, 7788, 2016-01-02,4500,NULL,50
+INSERT INTO EXAM_EMP VALUES(7201, 'TEST_USER1', 'MANAGER', 7788, '2016-01-02',4500,NULL,50);
+-- 7202, TEST_USER2, CLERK, 7201, 2016-02-21,1800,NULL,50
+INSERT INTO EXAM_EMP VALUES(7202, 'TEST_USER2', 'CLERK', 7201, '2016-02-21',1800,NULL,50);
+-- 7203, TEST_USER3, ANALYST, 7201, 2016-04-11,3400,NULL,60
+INSERT INTO EXAM_EMP VALUES(7203, 'TEST_USER3', 'ANALYST', 7201, '2016-04-11',3400,NULL,60);
+-- 7204, TEST_USER4, SALESMAN, 7201, 2016-05-31,2700,300,60
+INSERT INTO EXAM_EMP VALUES(7204, 'TEST_USER4', 'SALESMAN', 7201, '2016-05-31',2700,300,60);
+-- 7205, TEST_USER5, CLERK, 7201, 2016-07-20,2600,NULL,70
+INSERT INTO EXAM_EMP VALUES(7205, 'TEST_USER5', 'CLERK', 7201, '2016-07-20',2600,NULL,70);
+-- 7206, TEST_USER6, CLERK, 7201, 2016-09-08,2300,NULL,70
+INSERT INTO EXAM_EMP VALUES(7206, 'TEST_USER6', 'CLERK', 7201, '2016-09-08',2300,NULL,70);
+-- 7207, TEST_USER7, LECTURER, 7201, 2016-10-28,4500,NULL,80
+INSERT INTO EXAM_EMP VALUES(7207, 'TEST_USER7', 'LECTURER', 7201, '2016-10-28',4500,NULL,80);
 
 -- UPDATE
 -- exam_emp 에 속한 사원 중 50번 부서에서 근무하는 사원들의 평균 급여보다 많은 급여를
@@ -1507,17 +1504,19 @@ CREATE INDEX idx_emp_sal ON emp(sal);
 DROP INDEX idx_emp_sal;
 
 -- 뷰 : 가상 테이블
--- 1. 편리성 : 복잡한 select 문을 복잡도를 완화하기 위해
---			 자주 활용하는 select 문을 뷰로 저장해 놓은 후 다른 sql 구문에서 활용
--- 2. 보안성 : 노출되면 안 되는 컬럼을 제외하여 접근 허용
+-- 1. 편리성 : 복잡한 select 문의 복잡도를 완화하기 위해
+--             자주 활용하는 select 문을 뷰로 저장해 놓은 후 다른 sql 구문에서 활용
+-- 2. 보안성 : 노출되면 안되는 컬럼을 제외하여 접근 허용
 
 -- 뷰 생성 할 수 있는 권한 부여 받기
--- CREATE [OR REPLACE] VIEW 뷰이름(열이름1, 열이름2...) AS (SELECT 구문) 
+-- CREATE [OR REPLACE] VIEW 뷰이름(열이름1, 열이름2...) AS (SELECT 구문)
 
--- emp 테이블의 20번 부서에 해당하는 사원들의 뷰 생성
+-- emp 테이블의 20번 부서에 해당하는 사원들의  뷰 생성
 CREATE VIEW vw_emp_20 AS (SELECT empno, ename, job, deptno FROM emp WHERE deptno = 20);
 DROP VIEW vw_emp_20;
 
+
+CREATE VIEW vw_emp_20 AS (SELECT * FROM emp WHERE deptno = 20);
 
 -- 뷰에 데이터 삽입 시 원본 테이블에 삽입이 일어남
 INSERT INTO vw_emp_20 VALUES(6666,'홍길동','MANAGER',7899,'2012-08-01',1200,0,20);
@@ -1526,7 +1525,7 @@ SELECT * FROM VW_EMP_20;
 SELECT * FROM EMP;
 
 
--- 뷰는 SELECT 만 가능하도록 제한
+-- 뷰를 통해 SELECT 만 가능하도록 제한
 CREATE VIEW vw_emp_30 AS (
 SELECT
 	empno,
@@ -1552,10 +1551,324 @@ SELECT ROWNUM, E.*
 FROM (SELECT * FROM EMP ORDER BY SAL DESC) E;
 
 
+-- 급여 높은 순으로 top-n 추출
+SELECT ROWNUM, E.*
+FROM (SELECT * FROM EMP ORDER BY SAL DESC) E
+WHERE rownum <= 3;
+
+
+-- 시퀀스 : 규칙에 따라 순번을 생성
+-- CREATE SEQUENCE 시퀀스명;
+CREATE SEQUENCE dept_seq;
+
+
+--CREATE SEQUENCE SCOTT.DEPT_SEQ
+--INCREMENT BY 1 (기본값은 1 - 증가를 얼마씩 할 것인가?)
+--MINVALUE 1 (시퀀스에서 생성할 최소값)
+--MAXVALUE 99999999999999999999 (시퀀스에서 생성할 최대값)
+--NOCYCLE (최대값에 도달 후 다시 시작값부터 시작할 것인지 여부)
+--CACHE 20 (시퀀스에서 생성할 번호를 메모리에 미리 할당해 놓은 수)
+--NOORDER;
+
+CREATE TABLE dept_sequence AS SELECT * FROM dept WHERE 1<>1;
+
+SELECT * FROM dept_sequence;
+INSERT INTO DEPT_SEQUENCE(DEPTNO, DNAME, LOC)
+VALUES (dept_seq.nextval, 'DATABASE', 'SEOUL');
+
+INSERT INTO DEPT_SEQUENCE(DEPTNO, DNAME, LOC)
+VALUES (dept_seq.nextval, 'NETWORK', 'BUSAN');
+
+
+-- 가장 마지막으로 생성된 시퀀스 확인
+SELECT dept_seq.CURRVAL
+FROM DUAL;
+
+DROP SEQUENCE dept_seq;
+
+
+-- 부서번호가 10 씩 증가 / 부서번호 90 까지 존재
+CREATE SEQUENCE DEPT_SEQ
+INCREMENT BY 10
+START WITH 10
+MINVALUE 0
+MAXVALUE 90 
+NOCYCLE 
+CACHE 2;
+
+
+DELETE FROM DEPT_SEQUENCE;
+SELECT * FROM DEPT_SEQUENCE ORDER BY DEPTNO;
+
+INSERT INTO DEPT_SEQUENCE(DEPTNO, DNAME, LOC)
+VALUES (dept_seq.nextval, 'DATABASE', 'SEOUL');
+
+-- 시퀀스 MAXVALUE 를 넘어가는 실행을 하는 경우
+-- 시퀀스 DEPT_SEQ.NEXTVAL exceeds MAXVALUE 위반
+
+-- 시퀀스 수정
+ALTER SEQUENCE DEPT_SEQ
+INCREMENT BY 3
+MAXVALUE 99
+CYCLE;
+
+INSERT INTO DEPT_SEQUENCE(DEPTNO, DNAME, LOC)
+VALUES (dept_seq.nextval, 'DATABASE', 'SEOUL');
+
+
+-- 동의어 : 테이블, 뷰, 시퀀스 와 같은 객체에 대신 사용할 수 있는 이름 부여
+-- CREATE SYNONYM 동의어이름 FOR 테이블명
+
+-- EMP 테이블에 동의어 지정
+
+CREATE SYNONYM E FOR EMP;
+
+SELECT * FROM E;
+
+DROP SYNONYM E;
 
 
 
+-- ============ << 오라클 객체 생성 >> 위 내용 관련 =======================
+
+-- SQL Error [942] [42000]: ORA-00942: 테이블 또는 뷰가 존재하지 않습니다.
+-- => 처음 설정할때 Ctrl + Enter <실행> 해줘야 함, 순차적으로 <실행> 해주지 않을때 이런 오류가 발생함
+-- SQL Error [955] [42000]: ORA-00955: 기존의 객체가 이름을 사용하고 있습니다.
+-- => 만약 이미 한번 Ctrl + Enter <실행> 해주었다면, 두번 반복될때 이런 오류가 발생함
 
 
 
+-- 제약조건 : 특정 열에 지정
+-- 1) NOT NULL : 지정한 열에 NULL 을 허용하지 않음
+-- 2) UNIQUE : 지정한 열이 유일한 값을 가져야 함
+-- 3) PRIMARY KEY : 지정한 열이 유일한 값이면서 NULL 허용하지 않음(테이블 당 하나만 지정 가능)
+-- 4) FOREIGN KEY : 다른 테이블의 열을 참조하여 존재하는 값만 입력
+-- 5) CHECK : 설정한 조건식을 만족한느 데이터만 입력 가능
 
+CREATE TABLE TABLE_NOTNULL(
+	LOGIN_ID VARCHAR2(20) NOT NULL,
+	LOGIN_PWD VARCHAR2(20) NOT NULL,
+	TEL VARCHAR2(20)
+);
+
+-- NULL을 ("SCOTT"."TABLE_NOTNULL"."LOGIN_PWD") 안에 삽입할 수 없습니다
+-- INSERT INTO TABLE_NOTNULL VALUES ('TEST_ID_01', NULL, '010-1234-5678');
+INSERT INTO TABLE_NOTNULL VALUES ('TEST_ID_01', 'TEST_PWD_01', NULL);
+
+-- NULL을 ("SCOTT"."TABLE_NOTNULL"."LOGIN_PWD")을 업데이트 할 수 없습니다
+UPDATE TABLE_NOTNULL 
+SET LOGIN_PWD = NULL 
+WHERE LOGIN_ID = 'TEST_ID_01';
+
+SELECT * FROM TABLE_NOTNULL tn;
+
+-- 제약조건 지정 시 이름 부여
+CREATE TABLE TABLE_NOTNULL2(
+	LOGIN_ID VARCHAR2(20) CONSTRAINT TBLNN2_LGNID_NN NOT NULL,
+	LOGIN_PWD VARCHAR2(20) CONSTRAINT TBLNN2_LGNPWD_NN NOT NULL,
+	TEL VARCHAR2(20)
+);
+
+UPDATE TABLE_NOTNULL 
+SET TEL = '010-5678-9358'
+WHERE LOGIN_ID = 'TEST_ID_01'
+
+-- 기존 테이블에 제약조건 추가(TABLE_NOTNULL TEL 컬럼에 NOT NULL 제약조건 추가)
+ALTER TABLE TABLE_NOTNULL MODIFY(TEL NOT NULL);
+
+ALTER TABLE TABLE_NOTNULL2 MODIFY(TEL CONSTRAINT TBLNN_TEL_NN NOT NULL);
+
+-- 생성한 제약조건 이름 변경
+ALTER TABLE TABLE_NOTNULL2 RENAME CONSTRAINT TBLNN_TEL_NN TO TBLNN2_TEL_NN;
+
+-- 제약조건 삭제
+ALTER TABLE TABLE_NOTNULL2 DROP CONSTRAINT TBLNN2_TEL_NN;
+
+
+-- -- -- [메모장] 변수명 지정 Naming Rule -- -- -- -- -- -- --
+
+-- 헝가리안 표기법
+-- intNum;
+-- strNum;
+
+-- 자바 : 카멜 표기법(단어와 단어 사이를 대문자로 구분)
+-- 변수 : 소문자 maxSpeed
+
+-- 데이터베이스 : snake 표기법(단어와 단어 사이를 언더바로 구분)
+-- LOGIN_ID -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+
+-- 2) UNIQUE : 데이터 중복을 허용하지 않음
+CREATE TABLE TABLE_UNIQUE(
+	LOGIN_ID VARCHAR2(20) UNIQUE,
+	LOGIN_PWD VARCHAR2(20) NOT NULL,
+	TEL VARCHAR2(20)
+);
+
+
+INSERT INTO TABLE_UNIQUE VALUES ('TEST_ID_01','TEST_PW_01','010-1234-5678');
+SELECT * FROM TABLE_UNIQUE tu;
+
+-- 무결성 제약 조건(SCOTT.SYS_C008393) 에 위배됩니다
+-- 무결성 : 데이터 정확성과 일관성
+
+-- 중복여부만 확인
+INSERT INTO TABLE_UNIQUE VALUES (NULL,'TEST_PW_01','010-1234-5678');
+
+CREATE TABLE TABLE_UNIQUE2(
+	LOGIN_ID VARCHAR2(20) CONSTRAINT TBLUNQ2_LGN_UNQ UNIQUE,
+	LOGIN_PWD VARCHAR2(20) CONSTRAINT TBLUNQ2_LGNPW_NN NOT NULL,
+	TEL VARCHAR2(20)
+);
+
+UPDATE TABLE_UNIQUE
+SET TEL = '010-4567-5896'
+WHERE LOGIN_ID = 'TEST_ID_01';
+
+ALTER TABLE TABLE_UNIQUE MODIFY(TEL UNIQUE);
+
+-- TABLE_UNIQUE2 TEL UNIQUE 제약 조건 추가 : 이름(TBLUNQ_TEL_UNQ) 부여
+ALTER TABLE TABLE_UNIQUE2 MODIFY(TEL CONSTRAINT TBLUNQ_TEL_UNQ UNIQUE);
+
+-- 계약 조건 이름 변경 TBLUNQ_TEL_UNQ => TBLUNQ2_TEL_UNQ
+ALTER TABLE TABLE_UNIQUE2 RENAME CONSTRAINT TBLUNQ_TEL_UNQ TO TBLUNQ2_TEL_UNQ;
+
+-- 제약 조건 삭제
+ALTER TABLE TABLE_UNIQUE2 DROP CONSTRAINT TBLUNQ2_TEL_UNQ;
+
+
+-- 3) PRIMARY KEY(PK - 기본키) : NOT NULL + UNIQUE
+-- 기본키 : 주민등록번호, 사원번호, 아이디
+-- 하나의 컬럼만 지정 가능
+
+CREATE TABLE TABLE_PK(
+	LOGIN_ID VARCHAR2(20) PRIMARY KEY,
+	LOGIN_PWD VARCHAR2(20) NOT NULL,
+	TEL VARCHAR2(20)
+);
+
+
+INSERT INTO TABLE_PK VALUES ('TEST_ID_01','TEST_PW_01','010-1234-5678');
+
+CREATE TABLE TABLE_PK2(
+	LOGIN_ID VARCHAR2(20),
+	LOGIN_PWD VARCHAR2(20),
+	TEL VARCHAR2(20),
+	PRIMARY KEY(LOGIN_ID),
+--  UNIQUE(LOGIN_PWD)
+	CONSTRAINT TBL_UNQ UNIQUE(LOGIN_PWD)
+);
+
+
+-- 4) FOREIGN KEY(외래 키)
+-- 무결성 제약조건(SCOTT.FK_DEPTNO)이 위배되었습니다- 부모 키가 없습니다
+-- DEPT 테이블의 DEPTNO 의 값을 기반으로 EMP 테이블의 DEPTNO 값 삽입
+INSERT INTO EMP 
+VALUES(9999,'테스트','CLERK','7788','2017-04-30',1200,NULL,50);
+
+
+-- 외래키 제약조건 테이블 생성
+-- 부모 테이블 생성
+CREATE TABLE DEPT_FK(
+	DEPTNO NUMBER(2) PRIMARY KEY,
+	DNAME VARCHAR2(14),
+	LOC VARCHAR2(13)
+);
+
+
+CREATE TABLE EMP_FK(
+	EMPNO NUMBER(4,0) PRIMARY KEY, 
+	ENAME VARCHAR2(10),
+	JOB VARCHAR2(9),
+	MRG NUMBER(4,0),
+	HIREDATE DATE,
+	SAL NUMBER(7,2),
+	COMM NUMBER(7,2),
+	DEPTNO NUMBER(2,0) CONSTRAINT EMPFK_DEPTNO_FK REFERENCES DEPT_FK(DEPTNO)
+);
+
+-- 무결성 ~~ - 부모 키가 없습니다
+INSERT INTO DEPT_FK VALUES(50,'DATABASE','SEOUL');
+INSERT INTO DEPT_FK VALUES(10,'NETWORK','BUSAN');
+INSERT INTO EMP_FK VALUES(9999,'테스트','CLERK','7788','2017-04-30',1200,NULL,50);
+
+DELETE FROM DEPT_FK WHERE DEPTNO = 10;
+
+-- 무결성 ~~ - 자식 레코드가 발견되었습니다
+DELETE FROM DEPT_FK WHERE DEPTNO = 50;
+
+DELETE EMP_FK WHERE EMPNO = 9999;
+
+-- 외래 키 제약조건이 걸린 테이블 규칙
+-- 1) 삽입 시 부모 부터 데이터 삽입
+-- 2) 삭제 시 자식 데이터부터 삭제
+
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+CREATE TABLE EMP_FK2(
+	EMPNO NUMBER(4,0) PRIMARY KEY, 
+	ENAME VARCHAR2(10),
+	JOB VARCHAR2(9),
+	MRG NUMBER(4,0),
+	HIREDATE DATE,
+	SAL NUMBER(7,2),
+	COMM NUMBER(7,2),
+	DEPTNO NUMBER(2,0) CONSTRAINT EMPFK_DEPTNO_FK REFERENCES DEPT_FK(DEPTNO)
+);
+
+INSERT INTO DEPT_FK VALUES(50,'DATABASE','SEOUL');
+INSERT INTO EMP_FK VALUES(9999,'테스트','CLERK','7788','2017-04-30',1200,NULL,50);
+
+CREATE TABLE EMP_FK3(
+	EMPNO NUMBER(4,0) PRIMARY KEY, 
+	ENAME VARCHAR2(10),
+	JOB VARCHAR2(9),
+	MRG NUMBER(4,0),
+	HIREDATE DATE,
+	SAL NUMBER(7,2),
+	COMM NUMBER(7,2),
+	DEPTNO NUMBER(2,0) CONSTRAINT EMPFK_DEPTNO_FK REFERENCES DEPT_FK(DEPTNO)
+);
+
+INSERT INTO DEPT_FK VALUES(50, 'DATABASE','SEOUL');
+
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+-- 5) CHECK : 값의 범위 또는 패턴 정의
+
+CREATE TABLE TABLE_CHECK(
+	LOGIN_ID VARCHAR2(20) PRIMARY KEY,
+	LOGIN_PWD VARCHAR2(20) CONSTRAINT TBLCK_LGNPW_CK CHECK (LENGTH(LOGIN_PWD) >= 3), -- 길이가 3 이상
+	TEL VARCHAR2(20)
+);
+
+-- ORA-02290: 체크 제약조건(SCOTT.TBLCK_LGNPW_CK)이 위배되었습니다
+INSERT INTO TABLE_CHECK VALUES('TEST_ID_01','12',NULL);
+
+
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- 6) DEFALUT : 기본값 정의
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-- BOARD 테이블 정의
+-- bno(숫자), name, password, title, content, readcnt(숫자), regdate(날짜 - default 현재 시스템 날짜)
+-- 기본키 : bno,
+-- not null : name, password, title, content
+CREATE TABLE board(
+	bno number(8) PRIMARY KEY,
+	name varchar2(20) NOT NULL,
+	password varchar2(20) NOT NULL,
+	title varchar2(20) NOT NULL,
+	content varchar2(20) NOT NULL,
+	readcnt number(8) DEFAULT 0,
+	regdate DATE DEFAULT sysdate
+);
+
+-- 시퀀스 생성 : 1 씩 증가 board_seq
+CREATE SEQUENCE board_seq;
+
+INSERT INTO board(bno,name,password,title,content)
+VALUES(board_seq.nextval, 'hong','1111','게시판','게시글 작성')
+
+SELECT * FROM board;
