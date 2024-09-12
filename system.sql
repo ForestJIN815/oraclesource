@@ -1,12 +1,12 @@
 -- 사용자 생성 시 특정 문자열로 시작하는 user 생성을 안하겠음
 -- hr(c##hr)
-ALTER SESSION SET "_ORACLE_SCRIPT"=TRUE; 
+ALTER SESSION SET "_ORACLE_SCRIPT"=TRUE;
 
 
--- scott에게 뷰 권한 부여
-GRANT CREATE VIEW TO scott;
+-- scott 에게 뷰 권한 부여
+GRANT CREATE VIEW TO scott; 
 
--- scott에게 SYNONYM 권한 부여
+-- scott 에게 SYNONYM 권한 부여
 GRANT CREATE SYNONYM TO scott;
 
 
@@ -15,6 +15,7 @@ GRANT CREATE SYNONYM TO scott;
 --DEFAULT TABLESPACE 테이블스페이스명
 --TEMPORARY TABLESPACE 테이블스페이스 그룹명
 --QUOTA 테이블스페이스크기 ON 테이블스페이스명;
+
 
 
 -- 공통 사용자 또는 롤 이름이 부적합합니다.
@@ -44,8 +45,8 @@ DROP USER c##test1 CASCADE;
 --    ex) 데이터베이스 접속 권한 : GRANT SELECT,INSERT,DELETE ON BOARD TO C##TEST1; 
 
 -- 권한 취소
- REVOKE CREATE TABLE FROM C##TEST1;
- REVOKE SELECT, INSERT ON BOARD FROM C##TEST1; 
+-- REVOKE CREATE TABLE FROM C##TEST1;
+-- REVOKE SELECT, INSERT ON BOARD FROM C##TEST1; 
 
 -- c##test1 : 접속, 테이블 권한 부여
 GRANT CREATE SESSION, CREATE TABLE TO C##TEST1;
