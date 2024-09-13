@@ -1888,3 +1888,214 @@ INSERT INTO board(bno,name,password,title,content)
 VALUES(board_seq.nextval,'hong','1111','게시판','게시글 작성');
 
 SELECT * FROM board;
+
+
+
+-- PL/SQL : 데이터베이스 관련 특정 작업을 수행하는 명령어 / 선언문을 모아둔 블럭
+-- sql + 프로그래밍
+
+-- 블록 
+-- DECLARE 
+	  변수 선언(선언)
+-- BEGIN
+-- 	  조건문, 반복문, SELECT, DML, 함수
+-- EXCEPTION
+--    오류 처리
+-- END;
+	  
+-- 실행결과를 화면에 출력	 
+SET SERVEROUTPUT ON;
+
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('HELLO PL/SQL');
+END;
+/
+
+
+-- 변수
+-- 테이블 / 컬럼명 짓는 규칙과 같음
+-- 숫자 : NUMBER / 문자 : VARCHAR2 / 날짜 : DATE / 논리 : BOOLEAN
+
+DECLARE
+	V_EMPNO NUMBER(4) := 7788;
+	V_ENAME VARCHAR2(10);
+BEGIN
+	V_ENAME := 'SCOTT';
+--  DBMS_OUTPUT.PUT_LINE('V_EMPNO : '|| V_EMPNO);
+	DBMS_OUTPUT.PUT_LINE('V_EMPNO : '|| V_ENAME);
+END;
+/
+
+-- 상수
+DECLARE
+	V_TAX CONSTANT NUMBER(1) := 7;
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('V_TAX : '|| V_TAX);
+END;
+/
+
+-- 변수의 기본값 지정
+DECLARE
+	V_TAX NUMBER(2) DEFAULT 10;
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('V_TAX : '|| V_TAX);
+END;
+/
+
+-- 변수의 null 값 저장 막기
+DECLARE
+--  V_TAX NUMBER(2) NOT NULL DEFAULT 10;
+    V_TAX NUMBER(2) NOT NULL DEFAULT := 20;
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('V_TAX : '|| V_TAX);
+END;
+/
+
+-- 참조형(특정 테이블 열의 자료형, 행 하나의 자료 구조 참조)
+DECLARE
+    V_DEPTNO DEPT.DEPTNO%TYPE := 20;
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('V_TAX : '|| V_DEPTNO);
+END;
+/
+
+
+DECLARE
+    V_DEPT_ROW DEPT%ROWTYPE;
+BEGIN
+	SELECT DEPTNO, DNAME, LOC INTO V_DEPT_ROW
+	FROM DEPT
+	WHERE DEPTNO = 40;
+	DBMS_OUTPUT.PUT_LINE('DEPTNO : '|| V_DEPT_ROW.DEPTNO);
+	DBMS_OUTPUT.PUT_LINE('DNAME : '|| V_DEPT_ROW.DNAME);
+	DBMS_OUTPUT.PUT_LINE('LOC : '|| V_DEPT_ROW.LOC);
+END;
+/
+
+
+-- 조건 제어문
+-- IF ~ THEN
+-- IF ~ THEN ~ ELSE
+-- IF ~ THEN ~ ELSIF ~ ELSE -- (ELSEIF 아님)
+
+
+-- 변수의 값이 홀/짝수 구분
+DECLARE
+    V_NUMBER NUMBER := 15;
+BEGIN
+	IF MOD(V_NUMBER,2) = 1 THEN  
+		DBMS_OUTPUT.PUT_LINE('V_NUMBER : '|| V_DEPTNO || ' 홀수');
+	END IF;
+END;
+/
+
+
+DECLARE
+    V_NUMBER NUMBER := 18;
+BEGIN
+	IF MOD(V_NUMBER,2) = 1 THEN  
+		DBMS_OUTPUT.PUT_LINE('V_NUMBER : '|| V_DEPTNO || ' 홀수');
+	ELSE
+	    DBMS_OUTPUT.PUT_LINE('V_NUMBER : '|| V_DEPTNO || ' 홀수');
+	END IF;
+END;
+/
+
+-- >=90, A, >=80, >=70 C, >=60 D, F
+DECLARE
+    V_NUMBER NUMBER := 77;
+BEGIN
+	IF V_NUMBER >= 90 THEN  
+	   DBMS_OUTPUT.PUT_LINE('A');
+	ELSIF V_NUMBER >= 80 THEN  
+	   DBMS_OUTPUT.PUT_LINE('B');
+	ELSIF V_NUMBER >= 70 THEN  
+	   DBMS_OUTPUT.PUT_LINE('C');	
+	ELSIF V_NUMBER >= 60 THEN  
+	   DBMS_OUTPUT.PUT_LINE('D');
+	ELSE 
+	   DBMS_OUTPUT.PUT_LINE('F');
+	END IF;
+END;
+/
+
+
+DECLARE
+    V_NUMBER NUMBER := 77;
+BEGIN
+	CASE TRUNC(V_NUMBER/10)
+		WHEN 10 THEN DBMS_OUTPUT.PUT_LINE('A');
+		WHEN 9 THEN DBMS_OUTPUT.PUT_LINE('A');
+		WHEN 8 THEN DBMS_OUTPUT.PUT_LINE('B');
+		WHEN 7 THEN DBMS_OUTPUT.PUT_LINE('C');
+		WHEN 6 THEN DBMS_OUTPUT.PUT_LINE('D');
+		ELSE DBMS_OUTPUT.PUT_LINE('F');
+	END CASE;
+END;
+/
+
+-- 반복문
+--LOOP ~ END LOOP;
+--WHILE ~ LOOP ~ END LOOP;
+--FOR IN LOOP ~ END LOOP;
+
+-- 종료
+-- EXIT WHEN
+-- CONTINUE
+-- CONTINUE WHEN
+
+
+DECLARE
+    V_NUM NUMBER := 0;
+BEGIN
+	LOOP
+		DBMS_OUTPUT.PUT_LINE('V_NUM : '|| V_NUM);
+		V_NUM := V_NUM + 1;
+		IF V_NUM > 4 THEN	
+			EXIT;
+		END IF;
+	END LOOP;
+END;
+/
+
+
+DECLARE
+    V_NUM NUMBER := 0;
+BEGIN
+	WHILE V_NUM < 4 LOOP
+		DBMS_OUTPUT.PUT_LINE('V_NUM : '|| V_NUM);
+		V_NUM := V_NUM + 1;
+	END LOOP;
+END;
+/
+
+
+BEGIN
+	FOR i IN 0..4 LOOP
+		DBMS_OUTPUT.PUT_LINE('i : '|| i);
+	END LOOP;
+END;
+/
+
+
+BEGIN
+	FOR i IN REVERSE 0..4 LOOP
+		DBMS_OUTPUT.PUT_LINE('i : '|| i);
+	END LOOP;
+END;
+/
+
+
+-- 1 ~ 10 숫자 중에서 홀수만 출력
+BEGIN
+	FOR i IN 1..10 LOOP
+		IF MOD(i, 2) = 1 THEN  
+		DBMS_OUTPUT.PUT_LINE('i : '|| i);
+		END IF;
+	END LOOP;
+END;
+/
+
+
+-- 커서(cursor) : SELECT 문 또는 DML 과 같은 SQL 구문 실행했을 때 
+-- 해당 SQL 을 처리하는 정보를 저장한 메모리 공간 
